@@ -25,7 +25,6 @@ export class Game {
   private currentColor: string = "black";
   private currentLineWidth: number = 2;
 
-  // New properties for zoom and pan
   private scale: number = 1;
   private minScale: number = 0.1;
   private maxScale: number = 5;
@@ -83,27 +82,15 @@ export class Game {
       if (message.type === "chat") {
         const parsedShape = JSON.parse(message.message);
         if (parsedShape.type === "update") {
-          // Update the shapes array
           this.existingShapes = parsedShape.shapes;
-          
-          // If it's a move update, keep any local active shape
-          if (parsedShape.isMoving && this.activeShape) {
-            const localActiveShape = this.activeShape;
-            this.existingShapes = this.existingShapes.map(shape => 
-              shape.type === "move" ? localActiveShape : shape
-            );
-          }
-          
-          this.redrawCanvas();
         } else {
           this.existingShapes.push(parsedShape.shape);
-          this.redrawCanvas();
         }
+        this.redrawCanvas();
       }
     };
   }
 
-  // Convert screen coordinates to canvas coordinates
   private screenToCanvas(x: number, y: number): { x: number; y: number } {
     return {
       x: (x - this.offsetX) / this.scale,
@@ -111,7 +98,6 @@ export class Game {
     };
   }
 
-  // Convert canvas coordinates to screen coordinates
   private canvasToScreen(x: number, y: number): { x: number; y: number } {
     return {
       x: x * this.scale + this.offsetX,
@@ -119,13 +105,11 @@ export class Game {
     };
   }
 
-  // New method to handle zooming
   private zoom(deltaY: number, centerX: number, centerY: number) {
     const zoomFactor = deltaY > 0 ? 0.9 : 1.1;
     const newScale = Math.min(Math.max(this.scale * zoomFactor, this.minScale), this.maxScale);
     
     if (newScale !== this.scale) {
-      // Calculate how the offset should change to zoom around mouse position
       const canvasPoint = this.screenToCanvas(centerX, centerY);
       this.scale = newScale;
       const newScreenPoint = this.canvasToScreen(canvasPoint.x, canvasPoint.y);
@@ -137,7 +121,6 @@ export class Game {
     }
   }
 
-  // New method to handle panning
   private pan(deltaX: number, deltaY: number) {
     this.offsetX += deltaX;
     this.offsetY += deltaY;
@@ -150,7 +133,6 @@ export class Game {
     this.ctx.fillStyle = "white";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Apply transformation
     this.ctx.translate(this.offsetX, this.offsetY);
     this.ctx.scale(this.scale, this.scale);
 
@@ -194,13 +176,6 @@ export class Game {
 
   getMovedShape(moveShape: Shape & { type: "move" }): Shape {
     const { shape, offsetX, offsetY } = moveShape;
-    const movedShape = {
-      ...shape,
-      ...(shape.type !== "move" && "lineWidth" in shape && {
-        color: shape.color,
-        lineWidth: shape.lineWidth
-      })
-    };
     switch (shape.type) {
       case "rect":
         return {
@@ -234,10 +209,8 @@ export class Game {
     const y = e.clientY - rect.top;
 
     if (e.ctrlKey || e.metaKey) {
-      // Zoom when Ctrl/Cmd is pressed
       this.zoom(e.deltaY, x, y);
     } else {
-      // Pan otherwise
       this.pan(-e.deltaX, -e.deltaY);
     }
   };
@@ -255,8 +228,6 @@ export class Game {
       this.canvas.style.cursor = this.selectedTool === "move" ? "move" : "crosshair";
     }
   };
-
-
 
   mouseDownHandler = (e: MouseEvent) => {
     this.clicked = true;
@@ -282,7 +253,7 @@ export class Game {
       this.eraseShape(this.startX, this.startY);
     } else if (this.selectedTool === "move") {
       const shapeToMove = [...this.existingShapes].reverse().find((shape) => {
-        if (shape.type === "move") return false;
+        if (shape.type === "move") return false; // Skip existing move shapes
         if (shape.type === "rect") {
           return (
             this.startX >= shape.x &&
@@ -303,6 +274,7 @@ export class Game {
       });
 
       if (shapeToMove) {
+        // Remove the original shape and any existing move shapes
         this.existingShapes = this.existingShapes.filter(
           shape => shape !== shapeToMove && shape.type !== "move"
         );
@@ -315,19 +287,6 @@ export class Game {
         };
         this.activeShape = moveShape;
         this.existingShapes.push(moveShape);
-
-        this.socket.send(
-          JSON.stringify({
-            type: "chat",
-            message: JSON.stringify({ 
-              type: "update", 
-              shapes: this.existingShapes,
-              isMoving: true 
-            }),
-            roomId: this.roomId,
-          })
-        );
-
         this.redrawCanvas();
       }
     }
@@ -410,24 +369,14 @@ export class Game {
       this.existingShapes.push(finalShape);
       
       // Sync with other users
-      // this.socket.send(
-      //   JSON.stringify({
-      //     type: "chat",
-      //     message: JSON.stringify({ type: "update", shapes: this.existingShapes }),
-      //     roomId: this.roomId,
-      //   })
-      // );
       this.socket.send(
         JSON.stringify({
           type: "chat",
-          message: JSON.stringify({ 
-            type: "update", 
-            shapes: this.existingShapes,
-            isMoving: false // Flag to indicate movement is complete
-          }),
+          message: JSON.stringify({ type: "update", shapes: this.existingShapes }),
           roomId: this.roomId,
         })
       );
+      
       this.activeShape = null;
     }
   
@@ -497,24 +446,6 @@ mouseMoveHandler = (e: MouseEvent) => {
     const moveShape = this.activeShape as Shape & { type: "move" };
     moveShape.offsetX = canvasPoint.x - this.startX;
     moveShape.offsetY = canvasPoint.y - this.startY;
-    const shapes = this.existingShapes.map(shape => {
-      if (shape === this.activeShape) {
-        return moveShape;
-      }
-      return shape;
-    });
-
-    this.socket.send(
-      JSON.stringify({
-        type: "chat",
-        message: JSON.stringify({ 
-          type: "update", 
-          shapes: shapes,
-          isMoving: true // Flag to indicate ongoing movement
-        }),
-        roomId: this.roomId,
-      })
-    );
     this.redrawCanvas();
   }
 };

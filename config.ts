@@ -1,2 +1,2 @@
-export const HTTP_Backend = "http://localhost:3002";
-export const WS_URL = "ws://localhost:8080";
+export const HTTP_Backend = "https://dev-sketch-http-production.up.railway.app";
+export const WS_URL = "wss://dev-sketch-ws-production.up.railway.app";
