@@ -5,10 +5,6 @@ import {
   Circle, 
   Eraser, 
   Move,
-  Undo2,
-  Redo2,
-  Save,
-  Trash2
 } from 'lucide-react';
 import { IconButton } from './IconButton';
 

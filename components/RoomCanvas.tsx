@@ -3,15 +3,12 @@
 import { WS_URL } from "@/config";
 import { useRef, useEffect, useState } from "react";
 import { Canvas } from "./Canvas";
-import { useRouter } from "next/navigation";
 import ErrorPage from "./Error";
 
 export function RoomCanvas({ roomId }: { roomId: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const router = useRouter();
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");

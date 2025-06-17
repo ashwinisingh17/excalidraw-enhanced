@@ -4,7 +4,7 @@ import { Users, Plus, ArrowLeft, Loader2, Terminal, Code2, Globe2, Sparkles, Zap
 import axios from 'axios';
 import { HTTP_Backend } from '@/config';
 import { useRouter } from 'next/navigation';
-import ErrorPage from '@/components/Error';
+// import ErrorPage from '@/components/Error';
 
 type Mode = 'select' | 'join' | 'create';
 type Status = 'idle' | 'loading' | 'success' | 'error';

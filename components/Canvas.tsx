@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { IconButton } from "./IconButton";
-import { Circle, Pencil, RectangleHorizontalIcon, Eraser, Move, Trash2, Code, Cross, CodeSquareIcon, Code2Icon, MoveLeft, AlignLeft, ChevronLast, ChevronLeft, RectangleHorizontal, ChevronDown } from "lucide-react";
+import {  Code2Icon, ChevronLeft } from "lucide-react";
 import { Game } from "@/draw/Game";
 import axios from "axios";
 import { HTTP_Backend } from "@/config";
