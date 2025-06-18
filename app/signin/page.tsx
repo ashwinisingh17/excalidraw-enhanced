@@ -30,6 +30,7 @@ export default function SignIn() {
           password,
         });
         localStorage.setItem('token',response.data.token);
+        localStorage.setItem('username', username);
   
         if (response.status === 200) {
           router.push("/join");
@@ -92,7 +93,7 @@ export default function SignIn() {
   
                 <div className="pt-16 text-center space-y-2">
                   <h1 className="text-4xl font-bold bg-gradient-to-r from-rose-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
-                    Join with us
+                    DevSketch
                   </h1>
                   <p className="text-gray-600">Create an account</p>
                 </div>

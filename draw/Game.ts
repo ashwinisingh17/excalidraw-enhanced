@@ -466,6 +466,15 @@ mouseMoveHandler = (e: MouseEvent) => {
     this.ctx.restore();
   } else if (this.selectedTool === "eraser") {
     this.eraseShape(canvasPoint.x, canvasPoint.y);
+    this.redrawCanvas();
+    this.ctx.save();
+    this.ctx.translate(this.offsetX, this.offsetY);
+    this.ctx.scale(this.scale, this.scale);
+    this.ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
+    this.ctx.beginPath();
+    this.ctx.arc(canvasPoint.x, canvasPoint.y, 10 / this.scale, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.restore();
   } else if (this.selectedTool === "move" && this.activeShape) {
     const moveShape = this.activeShape as Shape & { type: "move" };
     moveShape.offsetX = canvasPoint.x - this.startX;
@@ -475,9 +484,9 @@ mouseMoveHandler = (e: MouseEvent) => {
 };
 
 eraseShape(x: number, y: number) {
-  const threshold = 10 / this.scale; // Adjust threshold based on zoom level
+  const threshold = 10 / this.scale;
   const previousShapesCount = this.existingShapes.length;
-  
+
   this.existingShapes = this.existingShapes.filter((shape) => {
     if (shape.type === "rect") {
       return !(x >= shape.x && x <= shape.x + shape.width && y >= shape.y && y <= shape.y + shape.height);
@@ -489,7 +498,6 @@ eraseShape(x: number, y: number) {
     return true;
   });
 
-  // If shapes were actually erased, sync with other users
   if (previousShapesCount !== this.existingShapes.length) {
     this.socket.send(
       JSON.stringify({

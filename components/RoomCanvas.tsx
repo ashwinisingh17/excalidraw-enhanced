@@ -9,10 +9,13 @@ export function RoomCanvas({ roomId }: { roomId: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [username, setUsername] =  useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");
+      const username = localStorage.getItem("username");
+      setUsername(username);
       setToken(storedToken);
     }
   }, []);
@@ -47,7 +50,7 @@ export function RoomCanvas({ roomId }: { roomId: string }) {
 
   return (
     <div className="overflow-hidden h-full w-full fixed">
-      <Canvas roomId={roomId} socket={socket} />
+      <Canvas roomId={roomId} socket={socket} username={username || "Guest"} />
       <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
     </div>
   );
