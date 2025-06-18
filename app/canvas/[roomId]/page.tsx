@@ -1,4 +1,5 @@
 "use client";
+import { RoomCanvas } from "@/components/RoomCanvas";
 import React from "react";
 
 export default function CanvasPage({ params }: { params: Promise<{ roomId: string }> }) {

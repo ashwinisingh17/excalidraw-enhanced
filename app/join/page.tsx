@@ -4,7 +4,6 @@ import { Users, Plus, ArrowLeft, Loader2, Terminal, Code2, Globe2, Sparkles, Zap
 import axios from 'axios';
 import { HTTP_Backend } from '@/config';
 import { useRouter } from 'next/navigation';
-// import ErrorPage from '@/components/Error';
 
 type Mode = 'select' | 'join' | 'create';
 type Status = 'idle' | 'loading' | 'success' | 'error';
@@ -50,7 +49,8 @@ function App() {
         setStatus('error');
         setMessage('Room name already taken, please try another name.');
       }
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       setStatus('error');
       setMessage('Internal Server Error, Try Again!');
     }
@@ -87,7 +87,8 @@ function App() {
         setStatus('error');
         setMessage('Room not found, please check the name or ID.');
       }
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       setStatus('error');
       setMessage('Room not found');
     }

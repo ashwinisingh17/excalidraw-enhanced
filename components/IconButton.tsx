@@ -1,5 +1,4 @@
 import React from 'react';
-import { cn } from '@/app/utils/cn';
 
 interface IconButtonProps {
   onClick: () => void;

@@ -4,7 +4,7 @@ type Tool = "circle" | "rect" | "pencil" | "eraser" | "move";
 
 export type Shape =
   | { type: "rect"; x: number; y: number; width: number; height: number; color: string; lineWidth: number }
-  | { type: "circle"; centerX: number; centerY: number; radius: number; color: string; lineWidth: number }
+  | { type: "circle"; centerX: number; centerY: number; radiusX: number; radiusY: number; color: string; lineWidth: number }
   | { type: "pencil"; points: { x: number; y: number }[]; color: string; lineWidth: number }
   | { type: "move"; shape: Shape; offsetX: number; offsetY: number }
   | { type: "eraser"; x: number; y: number; width: number; height: number };
@@ -163,7 +163,15 @@ export class Game {
       }
     } else if (shape.type === "circle") {
       this.ctx.beginPath();
-      this.ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2);
+      this.ctx.ellipse(
+        shape.centerX,
+        shape.centerY,
+        Math.abs(shape.radiusX),
+        Math.abs(shape.radiusY),
+        0,
+        0,
+        Math.PI * 2
+      );
       this.ctx.stroke();
       this.ctx.closePath();
     } else if (shape.type === "move") {
@@ -234,19 +242,19 @@ export class Game {
     const rect = this.canvas.getBoundingClientRect();
     const screenX = e.clientX - rect.left;
     const screenY = e.clientY - rect.top;
-
+  
     if (this.isPanning) {
       this.lastPanX = screenX;
       this.lastPanY = screenY;
       return;
     }
-
+  
     const canvasPoint = this.screenToCanvas(screenX, screenY);
     this.startX = canvasPoint.x;
     this.startY = canvasPoint.y;
     this.currentMouseX = this.startX;
     this.currentMouseY = this.startY;
-
+  
     if (this.selectedTool === "pencil") {
       this.currentPencilStroke = [{ x: this.startX, y: this.startY }];
     } else if (this.selectedTool === "eraser") {
@@ -262,9 +270,10 @@ export class Game {
             this.startY <= shape.y + shape.height
           );
         } else if (shape.type === "circle") {
-          return (
-            Math.hypot(this.startX - shape.centerX, this.startY - shape.centerY) <= shape.radius
-          );
+          // Calculate if the point is inside the oval using the standard equation of an ellipse
+          const normalizedX = (this.startX - shape.centerX) / shape.radiusX;
+          const normalizedY = (this.startY - shape.centerY) / shape.radiusY;
+          return (normalizedX * normalizedX + normalizedY * normalizedY) <= 1;
         } else if (shape.type === "pencil") {
           return shape.points.some(
             (point) => Math.hypot(this.startX - point.x, this.startY - point.y) <= 10 / this.scale
@@ -272,12 +281,10 @@ export class Game {
         }
         return false;
       });
-
+  
       if (shapeToMove) {
         // Remove the original shape and any existing move shapes
-        this.existingShapes = this.existingShapes.filter(
-          shape => shape !== shapeToMove && shape.type !== "move"
-        );
+        this.existingShapes = this.existingShapes.filter(shape => shape !== shapeToMove);
         
         const moveShape = {
           type: "move" as const,
@@ -304,7 +311,8 @@ export class Game {
     if (this.selectedTool === "rect") {
       const width = canvasPoint.x - this.startX;
       const height = canvasPoint.y - this.startY;
-      if (Math.abs(width) > 1 && Math.abs(height) > 1) {
+      const radius = Math.hypot(width, height);
+      if (radius > 1) {
         const newShape: Shape = {
           type: "rect",
           x: Math.min(this.startX, canvasPoint.x),
@@ -324,13 +332,15 @@ export class Game {
         );
       }
     } else if (this.selectedTool === "circle") {
-      const radius = Math.hypot(canvasPoint.x - this.startX, canvasPoint.y - this.startY);
-      if (radius > 1) {
+      const width = canvasPoint.x - this.startX;
+      const height = canvasPoint.y - this.startY;
+      if (Math.abs(width) > 1 || Math.abs(height) > 1) {
         const newShape: Shape = {
           type: "circle",
-          centerX: this.startX,
-          centerY: this.startY,
-          radius,
+          centerX: this.startX + width/2,
+          centerY: this.startY + height/2,
+          radiusX: Math.abs(width/2),
+          radiusY: Math.abs(height/2),
           color: this.currentColor,
           lineWidth: this.currentLineWidth,
         };
@@ -367,6 +377,8 @@ export class Game {
       
       // Add the final shape
       this.existingShapes.push(finalShape);
+  
+      this.activeShape = null;
       
       // Sync with other users
       this.socket.send(
@@ -383,6 +395,8 @@ export class Game {
     this.redrawCanvas();
   };
 // ... [previous code remains the same until the mouseMoveHandler method]
+
+
 
 mouseMoveHandler = (e: MouseEvent) => {
   const rect = this.canvas.getBoundingClientRect();
@@ -420,12 +434,22 @@ mouseMoveHandler = (e: MouseEvent) => {
     this.ctx.restore();
   } else if (this.selectedTool === "circle") {
     this.redrawCanvas();
-    const radius = Math.hypot(canvasPoint.x - this.startX, canvasPoint.y - this.startY);
+    const width = canvasPoint.x - this.startX;
+    const height = canvasPoint.y - this.startY;
+    
     this.ctx.save();
     this.ctx.translate(this.offsetX, this.offsetY);
     this.ctx.scale(this.scale, this.scale);
     this.ctx.beginPath();
-    this.ctx.arc(this.startX, this.startY, radius, 0, Math.PI * 2);
+    this.ctx.ellipse(
+      this.startX + width/2,
+      this.startY + height/2,
+      Math.abs(width/2),
+      Math.abs(height/2),
+      0,
+      0,
+      Math.PI * 2
+    );
     this.ctx.stroke();
     this.ctx.closePath();
     this.ctx.restore();
@@ -458,7 +482,7 @@ eraseShape(x: number, y: number) {
     if (shape.type === "rect") {
       return !(x >= shape.x && x <= shape.x + shape.width && y >= shape.y && y <= shape.y + shape.height);
     } else if (shape.type === "circle") {
-      return Math.hypot(x - shape.centerX, y - shape.centerY) > shape.radius;
+      return Math.hypot(x - shape.centerX, y - shape.centerY) > shape.radiusX;
     } else if (shape.type === "pencil") {
       return shape.points.every((point) => Math.hypot(x - point.x, y - point.y) > threshold);
     }

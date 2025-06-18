@@ -35,7 +35,7 @@ export function Canvas({
         g.destroy();
       };
     }
-  }, [canvasRef]);
+  }, [canvasRef, roomId, socket]);
 
   return (
     <div className="h-screen relative flex overflow-hidden">
@@ -85,7 +85,7 @@ export function Canvas({
 }
 
 
-export async function clearCanvas(roomId: string,game?: Game) {
+export async function clearCanvas(roomId: string) {
     const response = await axios.post(`${HTTP_Backend}/clear`, {
         data: {
             roomId
