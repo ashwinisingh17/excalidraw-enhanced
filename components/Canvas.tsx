@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Code2Icon, ChevronLeft, MessageCircle, ChevronRight } from "lucide-react";
+import { Code2Icon, ChevronLeft, MessageCircle } from "lucide-react";
 import { Game } from "@/draw/Game";
 import axios from "axios";
 import { HTTP_Backend } from "@/config";

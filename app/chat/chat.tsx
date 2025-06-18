@@ -10,7 +10,7 @@ interface ChatInterfaceProps {
   username: string
 }
 
-export default function ChatInterface({ isChatOpen, setIsChatOpen, socket, roomId, username }:ChatInterfaceProps) {
+export default function ChatInterface({ setIsChatOpen, socket, roomId, username }:ChatInterfaceProps) {
   const [messages, setMessages] = useState<{ status: string,username: string, message: string }[]>([]);
   const [input, setInput] = useState<string>("");
 
