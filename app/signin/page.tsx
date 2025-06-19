@@ -41,11 +41,11 @@ export default function SignIn() {
           console.error("Signin error", error);
           if (error.response) {
             if (error.response.status === 400) {
-              setError({ message: "Internal Server Error, Try again" });
+              setError({ message: "Username and password doesn't match" });
             } else if (error.response.status === 411) {
               setError({ field: "username", message: "Username and password doesn't match" });
             } else {
-              setError({ message: "Internal Server Error, Try again" });
+              setError({ message: "Username and password doesn't match" });
             }
           } else {
             setError({ message: "Network error. Please check your connection." });
@@ -95,7 +95,7 @@ export default function SignIn() {
                   <h1 className="text-4xl font-bold bg-gradient-to-r from-rose-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
                     DevSketch
                   </h1>
-                  <p className="text-gray-600">Create an account</p>
+                  <p className="text-gray-600">Welcome Back</p>
                 </div>
               </div>
   
