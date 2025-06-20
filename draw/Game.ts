@@ -7,7 +7,8 @@ export type Shape =
   | { type: "circle"; centerX: number; centerY: number; radiusX: number; radiusY: number; color: string; lineWidth: number }
   | { type: "pencil"; points: { x: number; y: number }[]; color: string; lineWidth: number }
   | { type: "move"; shape: Shape; offsetX: number; offsetY: number }
-  | { type: "eraser"; x: number; y: number; width: number; height: number };
+  // | { type: "eraser"; x: number; y: number; width: number; height: number };
+  | { type: "eraser"; points: { x: number; y: number }[]; radius: number };
 
 export class Game {
   public canvas: HTMLCanvasElement;
@@ -258,6 +259,11 @@ export class Game {
     if (this.selectedTool === "pencil") {
       this.currentPencilStroke = [{ x: this.startX, y: this.startY }];
     } else if (this.selectedTool === "eraser") {
+      this.activeShape = {
+        type: "eraser",
+        points: [{ x: this.startX, y: this.startY }],
+        radius: 10
+      };
       this.eraseShape(this.startX, this.startY);
     } else if (this.selectedTool === "move") {
       const shapeToMove = [...this.existingShapes].reverse().find((shape) => {
@@ -396,6 +402,24 @@ export class Game {
   };
 // ... [previous code remains the same until the mouseMoveHandler method]
 
+private drawEraserPreview(x: number, y: number) {
+  this.ctx.save();
+  this.ctx.translate(this.offsetX, this.offsetY);
+  this.ctx.scale(this.scale, this.scale);
+  
+  // Draw eraser circle
+  this.ctx.beginPath();
+  this.ctx.arc(x, y, 10, 0, Math.PI * 2);
+  this.ctx.strokeStyle = "#ff0000";
+  this.ctx.lineWidth = 1 / this.scale;
+  this.ctx.stroke();
+  
+  // Fill with semi-transparent red
+  this.ctx.fillStyle = "rgba(255, 0, 0, 0.1)";
+  this.ctx.fill();
+  
+  this.ctx.restore();
+}
 
 
 mouseMoveHandler = (e: MouseEvent) => {
@@ -465,16 +489,11 @@ mouseMoveHandler = (e: MouseEvent) => {
     this.ctx.closePath();
     this.ctx.restore();
   } else if (this.selectedTool === "eraser") {
+   if (this.activeShape?.type === "eraser") {
+      this.activeShape.points.push({ x: canvasPoint.x, y: canvasPoint.y });
+    }
     this.eraseShape(canvasPoint.x, canvasPoint.y);
-    this.redrawCanvas();
-    this.ctx.save();
-    this.ctx.translate(this.offsetX, this.offsetY);
-    this.ctx.scale(this.scale, this.scale);
-    this.ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
-    this.ctx.beginPath();
-    this.ctx.arc(canvasPoint.x, canvasPoint.y, 10 / this.scale, 0, Math.PI * 2);
-    this.ctx.fill();
-    this.ctx.restore();
+    this.drawEraserPreview(canvasPoint.x, canvasPoint.y);
   } else if (this.selectedTool === "move" && this.activeShape) {
     const moveShape = this.activeShape as Shape & { type: "move" };
     moveShape.offsetX = canvasPoint.x - this.startX;
@@ -484,16 +503,47 @@ mouseMoveHandler = (e: MouseEvent) => {
 };
 
 eraseShape(x: number, y: number) {
-  const threshold = 10 / this.scale;
+  // const threshold = 10 / this.scale;
+  const eraserRadius = 10;
   const previousShapesCount = this.existingShapes.length;
 
+  // this.existingShapes = this.existingShapes.filter((shape) => {
+  //   if (shape.type === "rect") {
+  //     return !(x >= shape.x && x <= shape.x + shape.width && y >= shape.y && y <= shape.y + shape.height);
+  //   } else if (shape.type === "circle") {
+  //     return Math.hypot(x - shape.centerX, y - shape.centerY) > shape.radiusX;
+  //   } else if (shape.type === "pencil") {
+  //     return shape.points.every((point) => Math.hypot(x - point.x, y - point.y) > threshold);
+  //   }
+  //   return true;
+  // });
   this.existingShapes = this.existingShapes.filter((shape) => {
     if (shape.type === "rect") {
-      return !(x >= shape.x && x <= shape.x + shape.width && y >= shape.y && y <= shape.y + shape.height);
+      // Check if eraser circle intersects with rectangle
+      const circleDistX = Math.abs(x - (shape.x + shape.width/2));
+      const circleDistY = Math.abs(y - (shape.y + shape.height/2));
+
+      if (circleDistX > (shape.width/2 + eraserRadius)) return true;
+      if (circleDistY > (shape.height/2 + eraserRadius)) return true;
+
+      if (circleDistX <= (shape.width/2)) return false;
+      if (circleDistY <= (shape.height/2)) return false;
+
+      const cornerDistance = Math.pow(circleDistX - shape.width/2, 2) +
+                           Math.pow(circleDistY - shape.height/2, 2);
+
+      return cornerDistance > Math.pow(eraserRadius, 2);
     } else if (shape.type === "circle") {
-      return Math.hypot(x - shape.centerX, y - shape.centerY) > shape.radiusX;
+      // Check if eraser circle intersects with shape circle
+      const distance = Math.hypot(x - shape.centerX, y - shape.centerY);
+      return distance > (Math.max(shape.radiusX, shape.radiusY) + eraserRadius);
     } else if (shape.type === "pencil") {
-      return shape.points.every((point) => Math.hypot(x - point.x, y - point.y) > threshold);
+      // Check if any point of the pencil stroke is within eraser radius
+      return shape.points.every((point) => 
+        Math.hypot(x - point.x, y - point.y) > eraserRadius
+      );
+    } else if (shape.type === "eraser") {
+      return true; // Don't erase other eraser marks
     }
     return true;
   });

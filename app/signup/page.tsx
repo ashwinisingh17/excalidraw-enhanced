@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Code2, Loader2, Terminal } from "lucide-react";
+import { ArrowRight, Code2, Github, Loader2, LockIcon, Mail, Pencil, Share2, Sparkles, Terminal, User, User2Icon, Users } from "lucide-react";
 import axios from "axios";
 import { HTTP_Backend } from "@/config";
 import { useRouter } from "next/navigation";
@@ -56,152 +56,201 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-300 via-teal-50 to-cyan-200 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Gradients */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -inset-[10px] opacity-40">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-rose-200/30 rounded-full blur-[140px] animate-pulse" />
-          <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-teal-200/30 rounded-full blur-[140px] animate-pulse delay-75" />
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-cyan-200/30 rounded-full blur-[140px] animate-pulse delay-150" />
-        </div>
-      </div>
+    <div 
+      className="min-h-screen overflow-hidden relative bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900"
+      style={{
+        animation: 'gradientShift 15s ease infinite'
+      }}
+    >
+      <style jsx>{`
+        @keyframes gradientShift {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-fade-in {
+          animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .feature-grid {
+          background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+          background-size: 20px 20px;
+        }
+      `}</style>
 
-      {/* Floating Icons */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-10 animate-float-slow">
-          <Code2 size={24} className="text-rose-500/40" />
-        </div>
-        <div className="absolute bottom-20 right-20 animate-float-slower">
-          <Terminal size={28} className="text-teal-400/40" />
-        </div>
-      </div>
+      {/* Background Elements */}
+      <div className="absolute inset-0 feature-grid opacity-20"></div>
+      <div className="absolute top-20 left-10 w-32 h-32 bg-rose-500/20 rounded-full blur-[120px] animate-pulse"></div>
+      <div className="absolute bottom-20 right-10 w-32 h-32 bg-teal-500/20 rounded-full blur-[120px] animate-pulse delay-700"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-screen flex items-center">
+        {/* Left Side - Features */}
+        <div className="hidden lg:flex flex-col flex-1 text-white pr-12">
+          <h1 className="text-5xl font-bold mb-8 animate-fade-in">
+            Create Together,
+            <br />
+            <span className="bg-gradient-to-r from-rose-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+              Collaborate Better
+            </span>
+          </h1>
 
-      {/* Main Content */}
-      <div className="relative z-10 w-full max-w-lg">
-        <div className="bg-white/95 backdrop-blur-xl rounded-[3rem] shadow-2xl border border-white">
-          <div className="p-8">
-            {/* Logo Section */}
-            <div className="relative">
-              <div className="absolute -top-20 left-1/2 -translate-x-1/2">
-                <div className="relative">
-                  <div className="absolute -inset-4 bg-gradient-to-r from-rose-400 via-teal-400 to-cyan-400 rounded-full blur opacity-50 group-hover:opacity-75 transition animate-tilt"></div>
-                  <div className="relative bg-white rounded-full p-6 shadow-lg">
-                    <Terminal size={48} className="text-gray-800" />
-                  </div>
-                </div>
+          <div className="space-y-8 mt-12">
+            <div className="flex items-start space-x-4 animate-float">
+              <div className="flex-shrink-0 bg-white/5 p-3 rounded-lg backdrop-blur-sm border border-white/10">
+                <Pencil className="w-6 h-6 text-rose-400" />
               </div>
-
-              <div className="pt-16 text-center space-y-2">
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-rose-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
-                  Join with us
-                </h1>
-                <p className="text-gray-600">Create an account</p>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Intuitive Drawing Tools</h3>
+                <p className="text-zinc-300/80">Create beautiful diagrams and sketches with our easy-to-use tools</p>
               </div>
             </div>
 
-            {/* Sign Up Form */}
-            <form onSubmit={handleSignup} className="mt-8 space-y-6">
-              <div className="space-y-4">
-                {/* Name Input */}
-                <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Name
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute -inset-px bg-gradient-to-r from-rose-400 via-teal-400 to-cyan-400 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 blur-sm"></div>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="relative w-full rounded-xl bg-white px-4 py-3 text-gray-700 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
-                      placeholder="Enter your name"
-                    />
-                  </div>
-                </div>
+            <div className="flex items-start space-x-4 animate-float" style={{ animationDelay: '0.2s' }}>
+              <div className="flex-shrink-0 bg-white/5 p-3 rounded-lg backdrop-blur-sm border border-white/10">
+                <Share2 className="w-6 h-6 text-teal-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Real-time Collaboration</h3>
+                <p className="text-zinc-300/80">Work together with your team in real-time, anywhere in the world</p>
+              </div>
+            </div>
 
-                {/* Username Input */}
-                <div className="space-y-2">
-                  <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Username
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute -inset-px bg-gradient-to-r from-rose-400 via-teal-400 to-cyan-400 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 blur-sm"></div>
-                    <input
-                      id="username"
-                      name="username"
-                      type="text"
-                      required
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="relative w-full rounded-xl bg-white px-4 py-3 text-gray-700 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
-                      placeholder="Choose a username"
-                    />
-                  </div>
-                </div>
+            <div className="flex items-start space-x-4 animate-float" style={{ animationDelay: '0.4s' }}>
+              <div className="flex-shrink-0 bg-white/5 p-3 rounded-lg backdrop-blur-sm border border-white/10">
+                <Users className="w-6 h-6 text-cyan-400" />
+              </div>
+              <div>
+              <h3 className="text-xl font-semibold mb-2">Seamless Collaboration</h3>
+                <p className="text-zinc-300/80">
+                  Experience real-time coding, voice communication, and an interactive chat—all in one place.
+                </p>
+              </div>
+            </div>
+          </div>
 
-                {/* Password Input */}
-                <div className="space-y-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute -inset-px bg-gradient-to-r from-rose-400 via-teal-400 to-cyan-400 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 blur-sm"></div>
-                    <input
-                      id="password"
-                      name="password"
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="relative w-full rounded-xl bg-white px-4 py-3 text-gray-700 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
-                      placeholder="Create a password"
-                    />
-                  </div>
-                </div>
+          <div className="mt-16 border-t border-white/10 pt-8">
+            <p className="flex items-center text-lg text-zinc-300/90">
+              <Sparkles className="w-5 h-5 mr-2 text-yellow-500" />
+              Trusted by creators worldwide
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side - Sign Up Form */}
+        <div className="w-full max-w-md animate-fade-in">
+          <div className="relative">
+            <div className="absolute -inset-1">
+              <div className="w-full h-full mx-auto rotate-180 opacity-30 blur-lg filter bg-gradient-to-r from-rose-400 via-teal-400 to-cyan-400"></div>
+            </div>
+            <div className="relative bg-zinc-900/90 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/10">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white">Create your account</h2>
+                <p className="mt-2 text-sm text-zinc-300/80">Join community of creators and teams</p>
               </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="relative w-full group"
-              >
-                <div className="absolute -inset-px bg-gradient-to-r from-rose-400 via-teal-400 to-cyan-400 rounded-xl blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-200"></div>
-                <div className="relative bg-white rounded-xl px-6 py-3 transition-colors group-hover:bg-white/90">
-                  <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-rose-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-medium">
-                    {isLoading ? (
-                      <>
-                        <Loader2 size={20} className="animate-spin" />
-                        <span>Creating account...</span>
-                      </>
-                    ) : (
-                      'Sign up'
-                    )}
+              <form onSubmit={handleSignup} className="space-y-6">
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-zinc-300">Name</label>
+                    <div className="mt-1 relative group">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <User className="h-5 w-5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
+                      </div>
+                      <input
+                        id="name"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="block w-full pl-10 pr-3 py-2.5 bg-zinc-800/50 border border-zinc-700 text-white rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all hover:border-zinc-600"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-zinc-300">Username</label>
+                    <div className="mt-1 relative group">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <User2Icon className="h-5 w-5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
+                      </div>
+                      <input
+                        id="email"
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                        className="block w-full pl-10 pr-3 py-2.5 bg-zinc-800/50 border border-zinc-700 text-white rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all hover:border-zinc-600"
+                        placeholder="johndoe"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-zinc-300">Password</label>
+                    <div className="mt-1 relative group">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <LockIcon className="h-5 w-5 text-zinc-500 group-hover:text-zinc-400 transition-colors" />
+                      </div>
+                      <input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="block w-full pl-10 pr-3 py-2.5 bg-zinc-800/50 border border-zinc-700 text-white rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all hover:border-zinc-600"
+                        placeholder="••••••••"
+                      />
+                    </div>
                   </div>
                 </div>
-              </button>
 
-              {/* Sign In Link */}
-              <div className="text-center text-sm">
-                <span className="text-gray-600">Already have an account? </span>
-                <Link
-                  href="/signin"
-                  className="font-medium bg-gradient-to-r from-rose-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+                {error && (
+                  <div className="text-rose-500 text-sm text-center">{error.message}</div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="relative w-full group bg-gradient-to-r from-rose-400 via-teal-400 to-cyan-400 p-[1px] rounded-xl"
+                >
+                  <div className="relative bg-zinc-900 rounded-xl py-3 px-4 group-hover:bg-opacity-90 transition-all">
+                    <span className="flex items-center justify-center text-white font-medium">
+                      {isLoading ? 'Creating account...' : 'Create account'}
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                </button>
+              </form>
+
+              <p className="mt-6 text-center text-sm text-zinc-400">
+                Already have an account?{' '}
+                <a 
+                  href="/signin" 
+                  className="font-medium text-teal-400 hover:text-teal-300 transition-colors"
                 >
                   Sign in
-                </Link>
-              </div>
-
-              {/* Error Message */}
-              {error && (
-                <div className="text-center text-rose-500 bg-white/50 rounded-xl font-medium p-4 shadow-sm ring-1 ring-gray-100">
-                  {error.message}
-                </div>
-              )}
-            </form>
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
