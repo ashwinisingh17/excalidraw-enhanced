@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ArrowRight, Code2, Github, Loader2, LockIcon, Mail, Pencil, Share2, Sparkles, Terminal, User, User2Icon, Users } from "lucide-react";
+import { ArrowRight, LockIcon, Pencil, Share2, Sparkles, User, User2Icon, Users } from "lucide-react";
 import axios from "axios";
 import { HTTP_Backend } from "@/config";
 import { useRouter } from "next/navigation";
