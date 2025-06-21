@@ -222,7 +222,7 @@ export default function SignIn() {
                 </form>
   
                 <p className="mt-6 text-center text-sm text-zinc-400">
-                  Don't have an account? <a 
+                  Dont have an account? <a 
                     href="/signup" 
                     className="font-medium text-teal-400 hover:text-teal-300 transition-colors"
                   >
