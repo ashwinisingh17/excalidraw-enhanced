@@ -161,7 +161,7 @@ export default function SignIn() {
               <div className="relative bg-zinc-900/90 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/10">
                 <div className="text-center mb-8">
                   <h2 className="text-3xl font-bold text-white">Welcome Back</h2>
-                  <p className="mt-2 text-sm text-zinc-300/80">"Great things are built together. Join a thriving community of creators and collaborators."</p>
+                  <p className="mt-2 text-sm text-zinc-300/80">{"'Great things are built together. Join a thriving community of creators and collaborators.'"}</p>
                 </div>
   
                 <form onSubmit={handleSignin} className="space-y-6">
@@ -222,8 +222,7 @@ export default function SignIn() {
                 </form>
   
                 <p className="mt-6 text-center text-sm text-zinc-400">
-                  Don't have an account?{' '}
-                  <a 
+                  Don't have an account? <a 
                     href="/signup" 
                     className="font-medium text-teal-400 hover:text-teal-300 transition-colors"
                   >
