@@ -4,7 +4,6 @@ import { ArrowRight, LockIcon, Pencil, Share2, Sparkles, User, User2Icon, Users 
 import axios from "axios";
 import { HTTP_Backend } from "@/config";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
