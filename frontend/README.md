@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Excalidraw-Enhanced Frontend 🎨
 
-## Getting Started
+Welcome to **Excalidraw-Enhanced**, a collaborative platform where users can **draw, code, and chat** in real-time. This is the **frontend** part of the project, built using **React & Next.js**.
 
-First, run the development server:
+## 🚀 Features
+- 🎨 **Real-time Canvas** - Draw and collaborate with others.
+- 💬 **Chat System** - Communicate with other users while drawing.
+- 🖥️ **Code Editor** - Share and edit code in real-time.
+- 🎤 **Voice Chat** Talk with team members.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🛠️ Tech Stack
+- **Frontend**: Next.js, React, TypeScript
+- **Styling**: Tailwind CSS
+- **Real-Time**: WebSockets
+- **Auth & DB connection**: Node
+
+---
+
+## 📂 Folder Structure
+
+### `app/`
+Contains all the **Next.js pages and components**.  
+- `page.tsx` - The home page.
+- `canvas/` - The collaborative drawing canvas.
+- `chat/` - The chat system for real-time communication.
+- `editor-comp/` - The collaborative code editor.
+- `join/`, `signin/`, `signup/` - Authentication pages.
+
+### `components/`
+Reusable **UI components** used across the app.
+- `AuthPage.tsx` - Handles authentication UI.
+- `Canvas.tsx` - Main drawing canvas component.
+- `DrawingToolbar.tsx` - Toolbar for canvas tools (pen, eraser, etc.).
+- `Topbar.tsx` - Toolbar for canvas drawing modes.
+- `RoomCanvas.tsx` - Manages real-time drawing sessions.
+- `VoiceChat.tsx` - Voice chat integration.
+
+### `config/`
+Configuration files for different **services and integrations**.
+- `monaco.config.ts` - Configures the Monaco code editor.
+
+### `draw/`
+Contains core **drawing-related logic**.
+- `Game.ts` - Handles the game logic for collaborative drawing.
+- `http.ts` - Handles network requests related to drawing.
+
+### `public/`
+Static assets such as icons and images.
+- `file.svg`, `globe.svg`, `next.svg`, etc.
+
+### `node_modules/`
+Contains all **installed dependencies**. (Ignored in Git)
+
+### `config.ts`
+Main **configuration file** for the app.
+
+### `next.config.ts`
+Next.js **configuration file**.
+
+### `tailwind.config.ts`
+Configuration for **Tailwind CSS styling**.
+
+### `tsconfig.json`
+Configuration for **TypeScript**.
+
+---
+
+## 📦 Installation & Setup
+
+### 1️⃣ Clone the Repository
+```sh
+git clone https://github.com/ashwinisingh17/excalidraw-enhanced.git
+cd Excalidraw-Enhanced/frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 2️⃣ Install Dependencies
+```sh
+npm install
+```
+### 3️⃣ Start the server
+```sh
+npm run dev
+```
