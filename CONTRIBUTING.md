@@ -1,4 +1,4 @@
-# Enhanced-Excalidraw Development Guidelines
+# Enhanced-Excalidraw Contributing Guidelines
 
 ## Code Quality & Standards
 
@@ -64,12 +64,6 @@
 - Unit Tests: 70%
 - Integration Tests: 20%
 - End-to-End Tests: 10%
-
-### Testing Tools
-- Jest for unit and integration testing
-- React Testing Library
-- Cypress for E2E testing
-- Storybook for component testing
 
 ### Test Coverage Requirements
 - Minimum 80% code coverage
